@@ -1,0 +1,103 @@
+Problema 1 - Assuma que 1% da população tem COVID. Dos que têm COVID, 70% tem um teste rápido positivo mas 10% das pessoas que não têm COVID tem um teste rápido positivo. Imprima o histograma correspondente aos positivos;
+
+~~~~
+var modelo = function () {
+  var covid = flip(0.01)
+  var posA = covid ? flip(0.7) : flip(0.1)
+  condition(covid)
+  //prob condicionada de dar positivo se ele tem covid
+  return {TesteA_positivo: posA}
+}
+
+//se tem covid, 70% das pessoas dao positivo. Se nao tem, covid, 10% das pessoas dão positivo
+//vai ser imprimido o histograma das pessoas que têm covid
+//das que têm covid, "true" são as que dão positivo no teste A e "falso" negativo no teste A
+
+console.log('Problema 1: \nHistograma das pessoas que têm teste A positivo considerando que têm COVID')
+viz.hist(Infer(modelo))
+~~~~
+
+Problema 2 - Assuma agora que existe o teste B (em oposição ao teste A referido acima) em que 90% das pessoas com COVID tem um teste positivo enquanto que só 1% das pessoas sem COVID tem um teste positivo. Assuma também que das pessoas que ligam para o Saúde24, 80% das pessoas fizeram o teste A e as restantes fizeram o teste B. Imprima o histograma correspondente aos positivos.
+
+~~~~
+var positivo = function () {
+  var covid = flip(0.01)
+  var posA = covid ? flip(0.7) : flip(0.1)
+  var posB = covid ? flip(0.9) : flip(0.01)
+  var pos = flip(0.8) ? posA : posB
+  return {Teste_positivo: pos}
+}
+//probabilidade de ligarem para a saude 24 e terem um teste positivo
+
+console.log('Problema 2: \nHistograma das pessoas que ligaram para a saúde 24 e têm teste positivo')
+viz.hist(Infer(positivo))
+~~~~
+
+Problema 3 - Calcule p(COVID|positivo) para a pergunta 1 da ficha 3;
+
+~~~~
+var modelo = function () {
+  var covid = flip(0.01)
+  var posA = covid ? flip(0.7) : flip(0.1)
+  condition(posA)
+  //prob condicionada de ter covid se ele tem teste positivo
+  return {Positivo_covid_se_positivo_testeA: covid}
+}
+//vai ser imprimido o histograma das pessoas que têm teste positivo no teste A
+//das que têm teste A positivo, "true" são as que têm covid e "falso" as que não têm covid
+
+console.log('Problema 3: \nTabela das pessoas que têm COVID considerando que têm teste A positivo')
+viz.table(Infer(modelo))
+~~~~
+
+Problema 4 - Se tiver um teste positivo para a pergunta 2 da ficha 3, calcule:
+
+i - A probabilidade de ter COVID;
+
+ii - A probabilidade de ter feito o teste A;
+
+iii - A probabilidade de ter feito o teste A com teste positivo e COVID;
+
+~~~~
+var i = function () {
+  var covid = flip(0.01)
+  var posA = covid ? flip(0.7) : flip(0.1)
+  var posB = covid ? flip(0.9) : flip(0.01)
+  var pos = flip(0.8) ? posA : posB
+  condition(pos)
+  return {i_covid_com_teste_positivo: covid}
+}
+//i: Probabilidade de ter covid com qq um dos testes positivos
+
+var ii = function () {
+  var covid = flip(0.01)
+  var posA = covid ? flip(0.7) : flip(0.1)
+  var posB = covid ? flip(0.9) : flip(0.01)
+  var testeA = flip(0.8)
+  var pos = testeA ? posA : posB
+  condition(pos)
+  return {ii_teste_A_se_teste_positivo: testeA}
+}
+//ii: Probabilidade de ter feito o teste A e ter teste positivo
+
+var iii = function () {
+  var covid = flip(0.01)
+  var posA = covid ? flip(0.7) : flip(0.1)
+  var posB = covid ? flip(0.9) : flip(0.01)
+  var testeA = flip(0.8)
+  var pos = testeA ? posA : posB
+  condition(pos)
+  condition(covid)
+  return {ii_teste_A_se_teste_positivo_e_covid: testeA}
+}
+//ii: Probabilidade de ter feito o teste A com teste positivo e COVID
+
+console.log('Problema 4: \n\ni: Tabela da probabilidade de ter COVID considerando que tem teste positivo')
+viz.table(Infer(i))
+
+console.log('\nii: Tabela da probabilidade de de ter feito o teste A tendo teste positivo')
+viz.table(Infer(ii))
+
+console.log('\niii: Tabela da probabilidade de de ter feito o teste A de ter feito o teste A tendo teste positivo e COVID')
+viz.table(Infer(iii))
+~~~~
