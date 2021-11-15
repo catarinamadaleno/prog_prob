@@ -1,0 +1,175 @@
+Problema 1
+
+~~~~
+var coin = function (){
+  return flip()
+}
+//lança uma moeda com probabilidade 50-50
+
+var toss = function (n){return (sum(repeat(n,coin)))}
+//retorna a soma de n repetições do lançamento da moeda, que é igual ao numero de caras sendo
+//que cara tem o valor 1
+
+var all_coroa = function (n){
+  var valor = toss(n)
+  //console.log(valor) - verifica que funciona corretamente
+  if (valor == 0){
+    console.log("1.2 - Os lançamentos foram todos coroa")}
+  else{
+    console.log("1.2 - Os lançamentos não foram todos coroa")}
+}
+//verifica se os lançamentos foram todos coroa ou não
+
+var all_sameresult = function (n){
+  var valor = toss(n)
+  //console.log(valor) - verifica que funciona corretamente
+  if (valor == 0 || valor == n){
+    console.log("1.3 - Os lançamentos tiveram todos o mesmo resultado")}
+  else{
+    console.log("1.3 - Os lançamentos não tiveram todos o mesmo resultado")}
+}
+//verifica se os lançamentos tiveram todos o mesmo resultado
+
+console.log("1.1 - O número de caras é",toss(1))
+all_coroa(1)
+all_sameresult(2)
+//estas três funções são chamadas com o argumento igual ao número de lançamentos da moeda
+~~~~
+
+Problema 2
+
+~~~~
+var coin = function(){
+  if(flip()){
+    return "cara"
+  }
+  else
+    return "coroa"
+}
+//associa o valor 1 a "cara" e 0 a "coroa", faz um lançamento da moeda com probabilidade 50-50
+
+var toss = function() {
+  repeat(1000,coin)
+}
+//repete 1000 vezes o lançamento
+
+viz(toss())
+//chama o histograma das 1000 repetições
+~~~~
+
+Problema 3
+
+~~~~
+var make_coin = function(prob){
+  return function(){
+    return flip(prob)
+  }
+}
+//faz um lançamento da moeda com probabilidade prob de sair cara
+
+var toss = function(prob) {
+  repeat(1000,make_coin(prob))
+}
+//faz 1000 lançamentos da moeda com probabilidade definida
+
+viz(toss(0.1))
+//mostra o histograma com as frequências
+~~~~
+
+Problema 4
+
+~~~~
+var moedas = function(){
+  var moeda1 = flip(0.1)
+  var moeda2 = flip(0.1)
+  var moeda3 = flip(0.1)
+  var moeda4 = flip(0.1)
+  var moeda5 = flip(0.1)
+
+  return moeda1 + moeda2 + moeda3 + moeda4 + moeda5
+}
+//lança 5 moedas, cada uma com uma probabilidade definida, e retorna a frequência de sair 
+//cara, somando as frequências dos 5 lançamentos
+//por exemplo, com probabilidade 0,1 em todas, é mais provavel sair cara 0 vezes
+
+viz(Infer(moedas))
+//mostra o histograma relativo às frequências de sair cara
+~~~~
+
+~~~~
+viz(Binomial({p: 0.1, n: 5}))
+//faz exatamente o mesmo que a função anterior mas com a distribuição Binomial
+//está associada uma probabilidade p=0.1 como no exercício anterior, e n=5 lançamentos
+~~~~
+
+Problema 5
+
+~~~~
+var dado = function(){
+  return randomInteger(6) + 1
+}
+//lança um dado recorrendo à função randomInteger e soma-se 1 para começar em 1 e não em 0
+
+viz(Infer(dado))
+//mostra o histograma das frequências do lançamento do dado
+~~~~
+
+Problema 6
+
+~~~~
+var dados = function(){
+  var dado1 = randomInteger(6) + 1
+  var dado2 = randomInteger(6) + 1
+  return dado1 + dado2
+}
+//faz o mesmo que o programa anterior, mas lança dois dados e soma as frequências deles
+
+viz(Infer(dados))
+//mostra o histograma relativo ao lançamento dos dois dados
+~~~~
+
+Problema 7
+
+~~~~
+var cartas = (['AS','2S','3S','4S','5S','6S','7S','8S','9S','10S','JS','QS','KS','AH','2H','3H','4H','5H','6H','7H','8H','9H','10H','JH','QH','KH','AC','2C','3C','4C','5C','6C','7C','8C','9C','10C','JC','QC','KC','AD','2D','3D','4D','5D','6D','7D','8D','9D','10D','JD','QD','KD'])
+//lista de todas as cartas de um baralho, com primeiro caractere associado ao valor
+//e segundo caractere associado ao naipe
+
+var carta = function() {return categorical({vs:cartas})}
+//usa a distribuição categórica associada à lista anterior para escolher uma carta aleatória
+
+carta()
+~~~~
+
+Problema 8
+
+~~~~
+var cartas = (['AS','2S','3S','4S','5S','6S','7S','8S','9S','10S','JS','QS','KS','AH','2H','3H','4H','5H','6H','7H','8H','9H','10H','JH','QH','KH','AC','2C','3C','4C','5C','6C','7C','8C','9C','10C','JC','QC','KC','AD','2D','3D','4D','5D','6D','7D','8D','9D','10D','JD','QD','KD'])
+//lista de todas as cartas de um baralho, com primeiro caractere associado ao valor
+//e segundo caractere associado ao naipe
+
+var numero=52
+//variável com o número de cartas que ainda são possíveis escolher, inicializa em 52
+
+var toss = function (cartas, n, numero) {
+  if(n>0) {
+    var escolhida=randomInteger(numero)
+    //variável "escolhida" que guarda a carta escolhida aleatoriamente pela função randomInteger 
+    //associada ao número de cartas ("numero") que ainda é possível escolher
+    console.log(cartas[escolhida])
+    //mostra a carta escolhida aleatoriamente, com o índice na lista "cartas"
+    var remover=remove(cartas[escolhida], cartas)
+    //remove a carta com o índice "escolhida" da lista "cartas", pois é sem reposição
+    return toss(remover, n-1, numero-1) 
+    //retorna a função toss removendo a carta escolhida, decresce n por 1 (n é o número de
+    //cartas da mão) e descresce o numero de cartas possiveis de escolher por 1
+  }
+  if (n==0) {
+    return console.log("Esta é a sua mão de cartas")
+    //quando n decresce até chegar a 0, a mão acaba de ser lançada
+ }
+}
+
+toss(cartas,52,52)
+//lançando uma mão de 52 cartas verifica-se que não há repetições e funciona como devido
+~~~~
